@@ -1,40 +1,51 @@
 /*
 	TO DO API
 	usage:
-	curl http://127.0.0.1:3000/api -X GET
-	curl http://127.0.0.1:3000/api/1 -X GET
-	curl http://127.0.0.1:3000/api/1 -X PUT -H "content-type: application/json" -d "{\"name\" : \"raghav dua\"}"
+	curl http://127.0.0.1:3000/api -X POST -H "content-type: application/json" -d "{\"id\":1982, \"task\":\"move it move it\", \"priority\":1}"
 */
 
 var express = require ('express');
 var bodyParser = require ('body-parser');
-var app = express ();
-var router = express.Router ();
-var port = 3000;
-var items = {};
+var mongoose = require ('mongoose');
 
-router.use (bodyParser.json ());
-router.route ('/')
-	.get (function (req, res) {
-		console.log (req.originalUrl + ' called GET');
-		res.send (items);
+var db;
+var app = express ();
+var port = 3000;
+var itemSchema = mongoose.Schema ({id : 'number', task : 'string', priority : 'number'});
+var itemModel = mongoose.model ('items', itemSchema);
+
+mongoose.connect ('mongodb://127.0.0.1:27017/todo');
+db = mongoose.connection;
+
+db.on ('error', function (err) {
+	if (err) {
+		console.log (err);
+	}
+})
+   .once ('open', function () {
+	console.log ('Database connection successful');
+});
+
+app.use (bodyParser.json ())
+   .post ('/api', function (req, res) {
+		var newItem = new itemModel ({
+			id : req.body.id,
+			task : req.body.task,
+			priority : req.body.priority
+		});
+		console.log ('New Item received: ', newItem);
+
+		newItem.save (function (err, successObject) {
+			if (err) {
+				console.log ('Error pushing Data to MongoDB');
+				res.send ('There was an error. request not processed');
+			}
+			else {
+				console.log ('Successfully pushed data to MondoDB');
+				res.json (successObject);
+			}
+		});
 	})
-	.delete (function (req, res) {
-		items = {};
-		console.log ('items cleared');
-		res.send ('Items cleared');
-	});
-router.route ('/:itemID')
-	.get (function (req, res) {
-		console.log ('Get item ', req.params ["itemID"]);
-		res.send (items [req.params ["itemID"]], '\n');
-	})
-	.put (function (req, res) {
-		console.log ('update item ', req.params ["itemID"]);
-		items [req.params ["itemID"]] = req.body;
-		res.send (req.params ["itemID"], ' updated successfully\n');
-	});
-app.use ('/api', router);
-app.listen (port);
+    .listen (port);
 
 console.log ('Server up and running');
