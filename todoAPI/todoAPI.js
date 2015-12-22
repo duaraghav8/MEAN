@@ -1,7 +1,15 @@
 /*
-	TO DO API
+	TODO API
+	
+	mongo must have database 'todo' with collection 'items'
+	----------------------------------------
+	use todo
+	db.items.insert ({id : 1010, task : 'down with the big brother'})
+	----------------------------------------
+	
 	usage:
 	curl http://127.0.0.1:3000/api -X POST -H "content-type: application/json" -d "{\"id\":1982, \"task\":\"move it move it\", \"priority\":1}"
+	curl http://127.0.0.1:3000/api/1010 -X GET
 */
 
 var express = require ('express');
@@ -27,6 +35,7 @@ db.on ('error', function (err) {
 });
 
 app.use (bodyParser.json ())
+   .use (bodyParser.urlencoded ({extended : true}))
    .post ('/api', function (req, res) {
 		var newItem = new itemModel ({
 			id : req.body.id,
@@ -46,6 +55,12 @@ app.use (bodyParser.json ())
 			}
 		});
 	})
+    .get ('/api/:id', function (req, res) {
+    	itemModel.findOne ({id : req.params ['id']})
+    	         .exec (function (err, item) {
+    	         	res.json (item);
+    	         });
+    })
     .listen (port);
 
 console.log ('Server up and running');
