@@ -1,34 +1,40 @@
-var object = function () {
-	this.value = null;
-};
+var Heap = require ('heap');
+
+var object = (function (initial) {
+	this.value = initial;
+});
 object.prototype = {
-	setValue : function (value) {
-		this.value = value;
+	setValue : function (v) {
+		this.value = v;
 	},
+	getValue : function () { return (this.value); },
 	equals : function (other) {
 		if (other == null || this.constructor != other.constructor) { return (false); }
 		return (this.value == other.value);
 	},
 	compareTo : function (other) {
 		if (other == null || this.constructor != other.constructor) {
-			throw new Error ('Incompatible types');
+			return (new Error ('Incompatible Types'));
 		}
 		return (this.value - other.value);
 	}
 };
-object.greet = function () { console.log ('Hello world'); };
 
-object.greet ();
-var a = new object ();
-var b = new object ();
-
-a.setValue (192);
-b.setValue (197);
-
-var array = [b, a];
-console.log (array);
-console.log (a.compareTo (b) < 0);
-array.sort (function (a, b) {
+var array = [
+	new object (8976),
+	new object (-19),
+	new object (17862),
+	new object (-19)
+];
+var heap = new Heap (function (a, b) {
 	return (a.compareTo (b));
 });
-console.log (array);
+
+array.forEach (function (item, pos, arr) {
+	heap.push (item);
+});
+
+while (heap.nodes.length) {
+	console.log (heap.pop ());
+}
+
