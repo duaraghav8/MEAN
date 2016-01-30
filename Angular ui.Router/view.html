@@ -13,7 +13,8 @@
 	<script type = "text/ng-template" id = "/home.html">
 		<h2>{{heading}}</h2> <br />
 		<p ng-repeat = "post in posts | orderBy: '-upvotes'">
-                        <span ng-click = "upvote(post)">VOTE</span>
+                        <span ng-click = "upvote(post)">VOTE</span> <br />
+                        <a href= "#/posts/{{$index}}">View Post </a> <br />
                         <b>{{post.title}}</b>: {{post.upvotes}} <br />
                         <a href = "{{post.link}}">Link</a>
                 </p>
@@ -23,6 +24,10 @@
                         Link : <input type = "text" ng-model = "link" /> <br />
                         <input type = "submit" value = "Submit" />
                 </form>
+	</script>
+
+	<script type = "text/ng-template" id = "/posts.html">
+		{{post}};
 	</script>
 	</body>
 <html>
