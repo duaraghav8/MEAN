@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title> Flapper News </title>
+		<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script> <!--Basic Angular-->
+		<script src="http://angular-ui.github.io/ui-router/release/angular-ui-router.min.js"></script> <!--UI Router-->
+		<script src = "front.js"></script>
+	</head>
+
+	<body ng-app = "flapperNews">
+	<center><ui-view></ui-view></center>
+
+	<script type = "text/ng-template" id = "/home.html">
+		<h2>{{heading}}</h2> <br />
+		<p ng-repeat = "post in posts | orderBy: '-upvotes'">
+                        <span ng-click = "upvote(post)">VOTE</span>
+                        <b>{{post.title}}</b>: {{post.upvotes}} <br />
+                        <a href = "{{post.link}}">Link</a>
+                </p>
+
+                <form ng-submit = "addPost()">
+                        Title: <input type = "text" ng-model = "title" /> <br />
+                        Link : <input type = "text" ng-model = "link" /> <br />
+                        <input type = "submit" value = "Submit" />
+                </form>
+	</script>
+	</body>
+<html>
