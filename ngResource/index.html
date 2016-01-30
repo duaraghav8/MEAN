@@ -1,0 +1,19 @@
+<html>
+	<head>
+		<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+		<script src="angular-resource.min.js"></script>
+	</head>
+
+	<body>
+		<body ng-app = "myApp" ng-controller = "myCtrl">
+			{{obj}}
+		</body>
+
+		<script>
+			var app = angular.module ('myApp', ['ngResource']);
+			app.controller ('myCtrl', ['$scope', '$resource', function ($scope, $resource) {
+				var user = $resource ('http://localhost:8080/user/:name'); 
+				$scope.obj = user.get ({name:'raghav'});
+			}]);
+		</script>
+</html>
