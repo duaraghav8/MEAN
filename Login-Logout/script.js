@@ -31,7 +31,7 @@ app
 	.use (bodyParser.json ())
 	.use (bodyParser.urlencoded ({extended : true}))
 	.use (cookieParser ())
-	.use (session ({secret: ['1xusng23@']}))
+	.use (session ({secret: ['Chudail']}))
 
 	.get ('/', serveStatic (__dirname))
 	.post ('/login', function (req, res) {
