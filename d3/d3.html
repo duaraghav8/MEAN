@@ -1,0 +1,74 @@
+<html>
+  <body>
+    <script src="d3.v3.min.js" charset="utf-8"></script>
+    <script>
+      var data = [55, 44, 30, 23, 17, 14, 16, 25, 41, 61, 85, 101, 95, 105, 114, 150, 180, 210, 125, 100, 71, 75, 72, 67];
+      var barWidth = 20, barPadding = 3;
+      var graphWidth = data.length * (barWidth + barPadding);
+      var maxDatum = d3.max (data);
+      var textTranslator = "translate(" + barWidth / 2 + ",0)";
+
+      var margin = { top: 10, right: 10, bottom: 10, left: 50 };
+      var totalWidth = graphWidth + margin.left + margin.right;
+      var totalHeight = maxDatum + margin.top + margin.bottom;
+
+      function xloc (d, i) { return (i * (barWidth + barPadding)); }
+      function yloc (d) { return (maxDatum - d); }
+      function translator (d, i) {
+        return 'translate(' + xloc (d,i) + ',' + yloc(d) + ')';
+      }
+
+      var svg = d3
+        .select ('body')
+        .append ('svg')
+        .attr ({
+          height: totalHeight,
+          width: totalWidth,
+          fill: 'white',
+          stroke: 'black',
+          'stroke-width': 1
+        });
+
+      var graphGroup = svg
+        .append ('g')
+        .attr('transform', 'translate(' + margin.left + ',' + margin.top + ")");
+
+      graphGroup
+        .append ('rect')
+        .attr ({
+          fill: 'rgba(0,0,0,0.1)',
+          width: totalWidth - (margin.left + margin.right),
+          height: totalHeight - (margin.bottom + margin.top)
+        });
+
+      var entering = graphGroup
+        .selectAll ('g')
+        .data (data)
+        .enter ();
+
+      var barGroup = entering
+        .append ('g')
+        .attr ('transform', translator);
+
+      barGroup
+        .append ('rect')
+        .attr ({
+          height: function (d) { return (d); },
+          width: barWidth,
+          fill: 'teal',
+        });
+
+      barGroup
+        .append ('text')
+        .text (function (d) { return (d); })
+        .attr ({
+          fill: 'white',
+          'alignment-baseline': 'before-edge',
+          'text-anchor': 'middle',
+          transform: textTranslator
+        })
+        .style ('font', '10px sans-serif');
+
+    </script>
+  </body>
+</html>
