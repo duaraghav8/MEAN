@@ -1,0 +1,50 @@
+<html>
+  <body>
+    <script src="d3.v3.min.js" charset="utf-8"></script>
+    <script>
+      var url = "https://gist.githubusercontent.com/d3byex/e5ce6526ba2208014379/raw/8fefb14cc18f0440dc00248f23cbf6aec80dcc13/walking_dead_s5.json";
+
+      d3.json (url, function (err, json) {
+        if (err) { return; }
+        var data = json.map (function (d) {
+          console.log (d.USViewers/100000);
+          return (d.USViewers/100000);
+        });
+
+        data = [];
+        for (var i = 0; i < 10; i++) { data.push (Math.random () * 300); }
+
+        var scale = d3.scale
+          .linear ()
+          .domain ([d3.min (data), d3.max (data)])
+          .range ([0, 300]);
+        var range = d3.range (0, 9),
+          colorScale = d3.scale.category10 ();
+
+        //console.log(colorScale(8));
+        //console.log (d3.min (data));
+
+        var svg = d3
+          .select ('body')
+          .append ('svg')
+          .attr ({height: 400, width: 1000})
+          .style ('background-color', 'lightgrey');
+
+        svg
+          .selectAll ('circle')
+          .data (data)
+          .enter ()
+          .append ('circle')
+          .attr ({
+            r: function (d) { return (d/10); },
+            fill: function (d, i) { return (colorScale (i%10)); },
+            cx: function (d) { return (d); },
+            cy: function (d) { return (scale (d)); },
+            'fill-opacity': 0.5
+            //stroke: 'white'
+          });
+
+      });
+    </script>
+  </body>
+</html>
