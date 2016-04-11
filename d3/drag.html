@@ -1,0 +1,85 @@
+<html>
+  <body>
+    <!--<button onclick="change()">Update Data</button><br />-->
+
+    <script src="d3.v3.min.js" charset="utf-8"></script>
+    <script>
+      var dragBeavior = d3.behavior.drag ().on ('drag', onDrag);
+      var origin = [500, 250],
+        radius = 40;
+      //var dragRelease = d3.behavior.drag ().on ('release', release);
+
+      var svg = d3.select ('body')
+        .append ('svg')
+        .attr ({height: 500, width: 1000})
+        .style ('background-color', 'lightgrey');
+
+      var text = svg.append ('text')
+        .text ('Hover your mouse')
+        .attr ({x:20, y: 20});
+
+      var circle = svg.append ('circle')
+        .attr ({
+          transform: function () {
+            return 'translate(' + origin [0] + ',' + origin [1] + ')';
+          },
+          r: radius,
+          fill: 'teal',
+          'fill-opacity': 0.3
+        });
+      circle.call (dragBeavior);
+
+      svg
+        .on ('mousemove', function () {
+          var currentPos = d3.mouse (svg.node ());
+          text.text ('X: ' + currentPos [0] + ', Y: ' + currentPos [1]);
+        })
+        .on ('mouseout', function () {
+          text.text ('Hover your mouse');
+        });
+
+      circle
+        .on ('mouseover', function () {
+          d3.select (this)
+            .transition ()
+            .duration (300)
+            .attr ({'fill-opacity': 1});
+        })
+        .on ('mouseout', function () {
+          d3.select (this)
+            .transition ()
+            .duration (200)
+            .attr ({'fill-opacity': 0.3});
+        })
+        .on ('mouseup', function () {
+          d3.select (this)
+            .transition ()
+            .duration (200)
+            .attr ({
+              transform: function () {
+                return 'translate(' + origin [0] + ',' + origin [1] + ')';
+              },
+              r: radius,
+              'fill-opacity': 0.3
+            });
+        });
+
+      function onDrag (d) {
+        var x = d3.event.x,
+          y = d3.event.y;
+
+        //if ((x >= 100) && (x <= 1000 - 100) && (y >= 100) && (y <= 500 - 100)) {
+          d3.select (this)
+            .attr ('transform', function () {
+              return 'translate(' + x + ',' + y + ')';
+            })
+            .transition ()
+            .duration (100)
+            .attr ({
+              r: function () { return (radius + Math.abs (origin [0] - x)/5); }
+            })
+        //}
+      }
+    </script>
+  </body>
+</html>
