@@ -1,0 +1,60 @@
+<html>
+  <body>
+    <button onclick="change()">Update Date</button><br />
+
+    <script src="d3.v3.min.js" charset="utf-8"></script>
+    <script>
+      var data = [];
+      var colorScale = d3.scale.category10 ();
+      var svg = d3
+        .select ('body')
+        .append ('svg')
+        .attr ({height: 500, width: 1000})
+        .style ('background-color', 'lightgrey');
+
+      for (var i = 0; i < 50; i++) {
+        data.push (Math.random () * 60);
+      }
+
+      svg
+        .selectAll ('circle')
+        .data (data)
+        .enter ()
+        .append ('circle')
+        .attr ({
+          fill: function (d, i) { return (colorScale (i%10)); },
+          'fill-opacity': '0.5',
+          cx: function () { return (Math.random ()*900 + 30); },
+          cy: function () { return (Math.random ()*400); + 30},
+          r: 0
+        })
+        .transition ()
+        //.delay ((function () { return Math.random ()*2000 }) ())
+        .duration (1000)
+        .attr ({
+          r: function (d) { return (d); }
+        });
+
+        function change () {
+          for (var i = 0; i < 50; i++) {
+            data [i] = (Math.random () * 60);
+          }
+
+          var selector = d3
+            .select ('body')
+            .select ('svg')
+            .selectAll ('circle')
+            .data (data);
+
+          var entering = selector.enter ();
+
+          selector
+          .transition ()
+          .duration (1000)
+          .attr ({
+            r: function (d) { return (d); }
+          });
+        }
+    </script>
+  </body>
+</html>
