@@ -1,0 +1,111 @@
+<html>
+  <body>
+    <!--<button onclick="change()">Update Data</button><br />-->
+
+    <script src="d3.v3.min.js" charset="utf-8"></script>
+    <script>
+      var data = {
+        "name": "Mike and Marcia",
+        "children": [
+          {
+            "name": "Children",
+            "children": [
+              { "name": "Mikael" }
+            ]
+          },
+          {
+            "name": "Pets",
+            "children": [
+              {
+                "name": "Dogs",
+                "children": [
+                  { "name": "Bleu" },
+                  { "name": "Tagg" }
+                ]
+              },
+              {
+                "name": "Cats",
+                "children": [
+                  { "name": "Bob" },
+                  { "name": "Peanut" }
+                ]
+              }
+            ]
+          }
+        ]
+      };
+      
+      var margin = {top: 30, left: 30, right: 30, bottom: 30},
+        height = 600, width = 1000;
+
+      var svg = d3.select ('body')
+        .append ('svg')
+        .attr ({
+          height: height,
+          width: width,
+        })
+        .style ('background-color', 'lightgrey');
+
+      var mainGroup = svg.append ('g')
+        .attr ({
+          height: height - (margin.top + margin.bottom),
+          width: width - (margin.left + margin.right),
+          transform: function () { return 'translate(' + margin.left + ',' + margin.top + ')'; }
+        });
+
+      var treeLayout = d3.layout.tree ()
+        .size ([
+          height - (margin.top + margin.bottom),
+          width - (margin.left + margin.right)
+        ]);
+
+      var nodes = treeLayout.nodes (data),
+        links = treeLayout.links (nodes);
+
+      var diagonal = d3.svg.diagonal ()
+        .projection (function (d) {
+          //console.log (d);
+          return ([d.y, d.x]);
+        });
+
+      mainGroup.selectAll ('path')
+        .data (links)
+        .enter ()
+        .append ('path', 'g')
+        .attr ({
+          d: diagonal,
+          stroke: 'black',
+          'stroke-width': 2,
+          fill: 'none'
+        });
+
+      var nodeGroup = mainGroup.selectAll ('g')
+        .data (nodes)
+        .enter ()
+        .append ('g')
+        .attr ({
+          transform: function (d) {
+            return 'translate(' + d.y + ',' + d.x + ')';
+          }
+        });
+
+      nodeGroup.append ('circle')
+        .attr ({
+          fill: 'teal',
+          r: 10,
+          stroke: 'black',
+          'stroke-width': 1
+        });
+      nodeGroup.append ('text')
+        .text (function (d) { return d.name; })
+        .attr('y', function (d) {
+          return d.children || d._children ? -10 * 2 : 10 * 2;
+        })
+        .attr({
+          dy: '.35em',
+          'text-anchor': 'middle',
+          'fill-opacity': 1
+        });
+    </script>
+  </body>
+</html>
