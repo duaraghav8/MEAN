@@ -1,0 +1,58 @@
+<html>
+  <body>
+    <script src="d3.v3.min.js" charset="utf-8"></script>
+    <script>
+    var data = [];
+    for (var i = 0; i < 200; i++) { data.push (Math.random () * 400); }
+
+    var margin = {top: 30, left: 30, right: 30, bottom: 30},
+      height = 600, width = 1000;
+    var barWidth = 30, barGap = 5;
+
+    var yScale = d3.scale.linear ()
+      .domain ([0, d3.max (data)])
+      .range ([0, 400]);
+    var xScale = d3.scale.ordinal ()
+      .domain (d3.range (0, data.length))
+      .rangeBands ([0, width - (margin.left + margin.right)]);
+    //var colorScheme = d3.scale.category10 ();
+    var colorScheme = d3.scale.linear ()
+      .domain ([0, data.length])
+      .range (['#700505', '#700695']);
+
+    var svg = d3.select ('body')
+      .append ('svg')
+      .attr ({
+        height: height,
+        width: width,
+      })
+      .style ('background-color', 'lightgrey');
+
+    var graphGroup = svg.append ('g')
+    .attr ({
+      height: height - (margin.top + margin.bottom),
+      width: width - (margin.left + margin.right),
+      transform: function () { return 'translate(' + margin.left + ',' + margin.top + ')'; }
+    });
+
+    var barGroup = graphGroup.selectAll ('g')
+      .data (data)
+      .enter ()
+      .append ('g');
+
+    barGroup
+      .attr ({
+        transform: function (d, i) { return ('translate(' + xScale(i) + ',' + (height - (margin.top + margin.bottom)-yScale(d)) + ')'); }
+      });
+    barGroup.append ('rect')
+      .attr ({
+        height: function (d) { return (yScale (d)); },
+        width: xScale.rangeBand(),
+        fill: function (d, i) { return colorScheme (i); },
+        //stroke: 'black',
+        //'stroke-width': 2
+      });
+
+    </script>
+  </body>
+</html>
