@@ -1,0 +1,59 @@
+<html>
+  <body>
+    <script src="d3.v3.min.js" charset="utf-8"></script>
+    <script>
+      var width = 1000, height = 500;
+      var data = [];
+
+      for (var i = 0; i < 10; i++) {
+        var val = Math.random ()*500;
+        data.push ({
+          label: 'Jason',
+          value: val
+        });
+      }
+
+      var maxValue = d3.max (data.map (function (d) {
+        return (d.value);
+      }));
+      var colorScheme = d3.scale.linear ()
+        .domain ([0, maxValue])
+        .range (['#800000', '#800190']);
+
+      var svg = d3.select ('body').append ('svg')
+        .attr ({
+          width: width,
+          height: height
+        })
+        .style ('background-color', 'lightgrey');
+
+      var pieLayout = d3.layout.pie ()
+        .value (function (d) {
+          return (d.value);
+        });
+      var arc = d3.svg.arc ()
+        .outerRadius (100);
+
+      //console.log (pieLayout (data));
+
+      var arcGroup = svg
+        .append ('g')
+        .attr ({
+          transform: 'translate(' + 500 + ',' + 250 + ')'
+        })
+        .selectAll ('path')
+        .data (pieLayout (data))
+        .enter ()
+        .append ('g');
+
+      arcGroup
+        .append ('path')
+        .attr ({
+          fill: function (d, i) { return (colorScheme (d.value)); },
+          stroke: 'black',
+          'stroke-width': 2,
+          d: arc
+        });
+    </script>
+  </body>
+</html>
