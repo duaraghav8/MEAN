@@ -5,7 +5,7 @@
       var width = 1000, height = 500;
       var data = [];
 
-      for (var i = 0; i < 10; i++) {
+      for (var i = 0; i < 3; i++) {
         var val = Math.random ()*500;
         data.push ({
           label: 'Jason',
@@ -32,7 +32,7 @@
           return (d.value);
         });
       var arc = d3.svg.arc ()
-        .outerRadius (100);
+        .outerRadius (200);
 
       //console.log (pieLayout (data));
 
@@ -52,7 +52,34 @@
           fill: function (d, i) { return (colorScheme (d.value)); },
           stroke: 'black',
           'stroke-width': 2,
+          'fill-opacity': 0.8,
           d: arc
+        })
+        .on ('mouseover', function () {
+          d3.select (this)
+            .transition ()
+            .duration (200)
+            .attr ({
+              'fill-opacity': 1
+            });
+        })
+        .on ('mouseout', function () {
+          d3.select (this)
+            .transition ()
+            .duration (200)
+            .attr ({
+              'fill-opacity': 0.8
+            });
+        });
+      arcGroup.append ('text')
+        .text (function (d) {return d.data.label;})
+        .attr ({
+          'text-anchor': 'middle',
+          transform: function (d) {
+            d.innerRadius = 0;
+            d.outerRadius = 200;
+            return 'translate(' + arc.centroid (d) + ')'
+          }
         });
     </script>
   </body>
