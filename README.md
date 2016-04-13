@@ -11,3 +11,6 @@ Above step sends back a set-cookie field in the header. The value of set-cookie 
 curl -i -X GET http://domainName.com/profile --cookie "KEY=VALUE"
 
 has a file **cluster.js** demonstrating a clustered server under cluster branch
+
+Repo contains mainly code samples from Angular.js, Node+Express along with shitloads of D3.js practice scripts.
+I <3 JS
