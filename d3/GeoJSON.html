@@ -1,0 +1,49 @@
+<html>
+  <body>
+
+    <section id = "networkspace"></section>
+
+    <script src="d3.v3.min.js" charset="utf-8"></script>
+    <script>
+      var url = 'https://gist.githubusercontent.com/d3byex/65a128a9a499f7f0b37d/raw/176771c2f08dbd3431009ae27bef9b2f2fb56e36/us-states.json';
+      d3.json (url, function (data) {
+        var margin = {top: 30, bottom: 30, left: 30, right: 30},
+          width = 1000, height = 500;
+        var colorScheme = d3.scale.category20 ();
+
+        var svg = d3.select ('#networkspace')
+          .append ('svg')
+          .attr ({
+            width: width,
+            height: height
+          })
+          .style ('background-color', 'lightblue');
+
+        var pathGenerator = d3.geo.path ();
+        var paths = svg.selectAll ('path')
+          .data (data.features)
+          .enter ()
+          .append ('path');
+
+        paths
+            .attr ({
+              d: pathGenerator,
+              fill: 'teal',
+              'stroke-width': 0,
+              stroke: 'black'
+            });
+        paths
+          .on ('mouseover', function () {
+            d3.select (this).attr ({
+              'stroke-width': 2
+            });
+          })
+          .on ('mouseout', function () {
+            d3.select (this).attr ({
+              'stroke-width': 0
+            });
+          });
+      });
+    </script>
+  </body>
+</html>
