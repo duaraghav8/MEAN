@@ -1,0 +1,66 @@
+<html>
+  <body>
+
+    <section id = "networkspace"></section>
+
+    <script src="d3.v3.min.js" charset="utf-8"></script>
+    <script>
+      var url = 'https://gist.githubusercontent.com/d3byex/5a8267f90a0d215fcb3e/raw/ba3b2e3065ca8eafb375f01155dc99c569fae66b/uni_network.json';
+      d3.json (url, function (data) {
+        var margin = {top: 30, bottom: 30, left: 30, right: 30},
+          width = 1000, height = 500;
+        var colorScheme = d3.scale.category20 ();
+
+        var svg = d3.select ('#networkspace')
+          .append ('svg')
+          .attr ({
+            width: width,
+            height: height
+          })
+          .style ('background-color', 'lightblue');
+
+          var forceLayout = d3.layout.force ()
+            .nodes (data.nodes)
+            .links (data.edges)
+            .size ([width, height])   //[width-(margin.left+margin.right), height-(margin.top+margin.bottom)]
+            .charge (-400)
+            .friction (0.4)
+            .start ();
+
+          var edges = svg.selectAll ('line')
+            .data (data.edges)
+            .enter ()
+            .append ('line')
+            .attr ({
+              stroke: 'black',
+              'stroke-width': 2
+            });
+
+          var nodes = svg.selectAll ('circle')
+            .data (data.nodes)
+            .enter ()
+            .append ('circle')
+            .attr ({
+              fill: 'teal',    //function (d, i) { return (colorScheme (i)); },
+              'fill-opacity': 0.6,
+              r: function () { return Math.round (Math.random() * 20); },
+            })
+            .call (forceLayout.drag);
+
+          forceLayout.on ('tick', function () {
+            edges.attr ({
+              x1: function (d) { return (d.source.x); },
+              y1: function (d) { return (d.source.y); },
+              x2: function (d) { return (d.target.x); },
+              y2: function (d) { return (d.target.y); },
+            });
+
+            nodes.attr ({
+              cx: function (d) { return (d.x); },
+              cy: function (d) { return (d.y); },
+            });
+          });
+      });
+    </script>
+  </body>
+</html>
