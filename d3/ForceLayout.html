@@ -23,8 +23,9 @@
             .nodes (data.nodes)
             .links (data.edges)
             .size ([width, height])   //[width-(margin.left+margin.right), height-(margin.top+margin.bottom)]
-            .charge (-400)
-            .friction (0.4)
+            .charge (-700)
+            .friction (0.7)
+            .linkDistance (50)
             .start ();
 
           var edges = svg.selectAll ('line')
@@ -36,30 +37,41 @@
               'stroke-width': 2
             });
 
-          var nodes = svg.selectAll ('circle')
-            .data (data.nodes)
-            .enter ()
-            .append ('circle')
-            .attr ({
-              fill: 'teal',    //function (d, i) { return (colorScheme (i)); },
-              'fill-opacity': 0.6,
-              r: function () { return Math.round (Math.random() * 20); },
-            })
-            .call (forceLayout.drag);
+            var nodes = svg.selectAll('g')
+              .data(data.nodes)
+              .enter()
+              .append('g')
+              .call(forceLayout.drag);
 
-          forceLayout.on ('tick', function () {
-            edges.attr ({
-              x1: function (d) { return (d.source.x); },
-              y1: function (d) { return (d.source.y); },
-              x2: function (d) { return (d.target.x); },
-              y2: function (d) { return (d.target.y); },
-            });
+            nodes.append('circle')
+              .attr ({
+                r: 10,
+                fill: function (d, i) { return colorScheme (i); },
+                'fill-opacity': 0.7
+              })
+              .call(forceLayout.drag);
 
-            nodes.attr ({
-              cx: function (d) { return (d.x); },
-              cy: function (d) { return (d.y); },
-            });
-          });
+              nodes.append('text')
+                  .attr({
+                          dx: 12,
+                          dy: '.35em',
+                          'pointer-events': 'none'
+                      })
+              .style('font', '10px sans-serif')
+                      .text(function (d) { return d.name });
+
+              forceLayout.on('tick', function () {
+                  edges.each(function (d) {
+                      d3.select(this).attr({
+                          x1: d.source.x,
+                          y1: d.source.y,
+                          x2: d.target.x,
+                          y2: d.target.y
+                      });
+                  });
+
+                  nodes.attr('transform', function (d) { return 'translate(' + d.x + ',' + d.y + ')'; });
+              });
       });
     </script>
   </body>
