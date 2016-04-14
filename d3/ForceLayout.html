@@ -47,9 +47,19 @@
               .attr ({
                 r: 10,
                 fill: function (d, i) { return colorScheme (i); },
-                'fill-opacity': 0.7
+                'fill-opacity': 0.7,
+                stroke: 'black',
+                'stroke-width': 0
               })
-              .call(forceLayout.drag);
+              .call(forceLayout.drag ()
+                .on ('dragstart', function (d) {
+                  d.fixed = true;
+                  d3.select (this).attr ({'stroke-width': 2});
+                }))
+              .on ('dblclick', function (d) {
+                d.fixed = false;
+                d3.select (this).attr ({'stroke-width': 0});
+              });
 
               nodes.append('text')
                   .attr({
