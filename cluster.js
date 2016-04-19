@@ -1,23 +1,22 @@
-/*
-  Distribute server load amongst multiple processes
-  cluster.fork () must only be called by master process (cluster.isMaster = true)
-*/
-var express = require ('express'),
-  cluster = require ('cluster');
+var cluster = require ('cluster'),
+  express = require ('express'),
+  app = null, listener = null;
 
 if (cluster.isMaster) {
-  console.log ('Master Process');
-  for (var i = 0; i < 3; i++) {
-    cluster.fork ();
-  }
+  for (var i = 0; i < 4; i++) { cluster.fork (); }
 }
-if (cluster.isWorker) {
-  var app = express (),
-    listener = app.listen (8080, function () {
-      console.log ('listening on port: ', listener.address ().port, ' as worker: ', cluster.worker.id);
+else if (cluster.isWorker) {
+  app = express ();
+
+  app
+    .get ('/', function (req, res) {
+      /*setTimeout (function () {
+        res.send ('Hello from worker: ' + cluster.worker.id.toString() + '\n');
+      }, 100);*/
+      res.send ('Hello from worker: ' + cluster.worker.id.toString() + '\n');
     });
 
-  app.get ('/', function (req, res) {
-    res.send ('Hello from worker ' + cluster.worker.id.toString ());
+  listener = app.listen (8080, function () {
+    console.log (cluster.worker.id.toString() + ' listening on port ', listener.address ().port);
   });
 }
