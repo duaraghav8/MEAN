@@ -14,3 +14,7 @@ has a file **cluster.js** demonstrating a clustered server under cluster branch
 
 Repo contains mainly code samples from Angular.js, Node+Express along with shitloads of D3.js practice scripts.
 I <3 JS
+
+Now has a couple of Design Patterns as well..
+
+1. Pub/Sub Pattern in Core JS
