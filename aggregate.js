@@ -18,7 +18,8 @@ var c = new Schema ({
 
 var b = new Schema ({
 	ids: [{type: String}],
-  roles: Array
+  roles: Array,
+  selfId: String
 });
 
 (function () {
@@ -48,7 +49,7 @@ var b = new Schema ({
       new cModel ({task: 'jump', role: '2'}).save (function (err, r) {});
       //-------------------------------------------------------------------
 
-  		new bModel ({ids: ["122", "123","124"], roles: ['1','2']}).save (function (err, r) {
+  		new bModel ({selfId: '1', ids: ["122", "123","124"], roles: ['1','2']}).save (function (err, r) {
 		  	console.log (err, r);
 	  	});
   	}
@@ -63,7 +64,7 @@ var b = new Schema ({
   		var bModel = mongoose.model ('bmodel');
 
   		bModel.aggregate ([
-		  	//{$match: {id: "123"}},   //search criteria
+		  	{$match: {selfId: "1"}},   //search criteria
 
         {'$unwind': '$ids'},
 
@@ -82,11 +83,11 @@ var b = new Schema ({
           users: {'$push': '$users'}
         }}
 
-        //{$project: {id: 1, "user.name": 1, _id: 0}}   //attributes to include in JOIN's resultant object(s)
+        //{$project: {id: 1, _id: 0}}   //attributes to include in JOIN's resultant object(s)
   		]).exec (function (err, res) {
-	  		/*console.log ('----------->', err, res [0]);
-        console.log ('*****', res [0].users);*/
-        console.log (res.length);
+	  		console.log ('----------->', err, res [0]);
+        console.log ('*****', res [0].users);
+        //console.log (res.length);
 	  	});
   	}
 
